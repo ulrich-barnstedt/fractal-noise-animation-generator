@@ -7,7 +7,7 @@ from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     np.random.seed(math.floor(time.time()))
     noise = generate_fractal_noise_3d(
-        (frameCount, resolution, resolution),
+        (frameCount, resolution[0], resolution[1]),
         (1, generationResolution, generationResolution),
         octaves,
         tileable=(True, False, False)
@@ -60,15 +60,13 @@ def _logTime(message):
     print(f"[{round(time.time() - startTime, 2)}s] {message}")
 
 _logTime("Start noise generation")
-noise = generateNoiseFrames(12, 1024, 8, 2)
+noise = generateNoiseFrames(12, (2576, 1392), 8, 2)
 _logTime(f"Noise generation done ({len(noise)})")
 smoothed = interpolateFrames(noise, 12)
 _logTime(f"Interpolation done ({len(smoothed)})")
 rawImages = frameToImage(smoothed)
 _logTime("Frame -> Image")
-scaledImages = scaleImage(rawImages, (1400, 1400))
-_logTime("Scaling done")
-images = filterImages(scaledImages, 3, 2)
+images = filterImages(rawImages, 3, 2)
 _logTime("Filters done")
 images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
 _logTime("Result saved")
