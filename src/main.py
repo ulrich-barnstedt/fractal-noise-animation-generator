@@ -2,7 +2,7 @@ import math
 import time
 import numpy as np
 from perlin_numpy import generate_fractal_noise_3d
-from PIL import Image, ImageOps, ImageFilter
+from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 
 def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     np.random.seed(math.floor(time.time()))
@@ -46,30 +46,29 @@ def frameToImage(frames):
 def scaleImage(images, newSize):
     return [i.resize(newSize) for i in images]
 
-def filterImages(images, posterizeBits):
-    posterizedImages = [ImageOps.posterize(i, posterizeBits) for i in images]
-    return posterizedImages
-    # edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in posterizedImages]
-    # return edgeImage
-    # coloredEdgeImage = [ImageOps.colorize(i, black="black", white="blue") for i in edgeImage]
+def filterImages(images, posterizeBits, deepfryFactor):
+    coloredImage = [ImageOps.colorize(i, black="blue", white="black") for i in images]
+    posterizedImages = [ImageOps.posterize(i, posterizeBits) for i in coloredImage]
+    brighterImage = [ImageEnhance.Brightness(i).enhance(deepfryFactor) for i in posterizedImages]
+    edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in brighterImage]
+    brighterEdgeImage = [ImageEnhance.Brightness(i).enhance(3) for i in edgeImage]
 
-    # return coloredEdgeImage
+    return brighterEdgeImage
 
 startTime = time.time()
 def _logTime(message):
     print(f"[{round(time.time() - startTime, 2)}s] {message}")
 
 _logTime("Start noise generation")
-noise = generateNoiseFrames(16, 1024, 8, 5)
-_logTime("Noise generation done")
-smoothed = interpolateFrames(noise, 8)
-_logTime("Interpolation done")
+noise = generateNoiseFrames(12, 1024, 8, 2)
+_logTime(f"Noise generation done ({len(noise)})")
+smoothed = interpolateFrames(noise, 12)
+_logTime(f"Interpolation done ({len(smoothed)})")
 rawImages = frameToImage(smoothed)
 _logTime("Frame -> Image")
-scaledImages = scaleImage(rawImages, (1024, 1024))
+scaledImages = scaleImage(rawImages, (1400, 1400))
 _logTime("Scaling done")
-images = filterImages(scaledImages, 3)
+images = filterImages(scaledImages, 3, 2)
 _logTime("Filters done")
-# images = scaledImages
 images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
 _logTime("Result saved")
