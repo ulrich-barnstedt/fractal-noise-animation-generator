@@ -4,17 +4,16 @@ import numpy as np
 from perlin_numpy import generate_fractal_noise_3d
 from PIL import Image, ImageOps, ImageFilter
 
-def generateNoiseFrames(frameCount, resolution, generationResolution):
+def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     np.random.seed(math.floor(time.time()))
     noise = generate_fractal_noise_3d(
-        (frameCount, resolution, resolution), (1, generationResolution, generationResolution), 4, tileable=(True, False, False)
+        (frameCount, resolution, resolution), (1, generationResolution, generationResolution), octaves, tileable=(True, False, False)
     )
 
-    adjustedNoise = (noise + 100) * 127.5  # somewhat 0 - 255
-
+    adjustedNoise = (noise + 2) * 127.5  # somewhat 0 - 255
     return adjustedNoise
 
-def smoothFrames(frames, steps):
+def interpolateFrames(frames, steps):
     outputNoise = []
     frameCount = len(frames)
 
@@ -29,16 +28,33 @@ def smoothFrames(frames, steps):
 
     return np.uint8(np.array(outputNoise))
 
-def filters(frames):
-    image = [Image.fromarray(x, "L") for x in frames]
-    posterizedImage = [ImageOps.posterize(i, 4) for i in image]
+def frameToImage(frames):
+    return [Image.fromarray(x, "L") for x in frames]
 
-    edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in posterizedImage]
+def scaleImage(images, newSize):
+    return [i.resize(newSize) for i in images]
+
+def filterImages(images, posterizeBits):
+    posterizedImages = [ImageOps.posterize(i, posterizeBits) for i in images]
+    edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in posterizedImages]
     coloredEdgeImage = [ImageOps.colorize(i, black="black", white="blue") for i in edgeImage]
 
     return coloredEdgeImage
 
-noise = generateNoiseFrames(16, 1024, 4)
-smoothed = smoothFrames(noise, 8)
-images = filters(smoothed)
+startTime = time.time()
+def _logTime(message):
+    print(f"[{round(time.time() - startTime, 2)}s] {message}")
+
+_logTime("Start")
+noise = generateNoiseFrames(16, 1024, 8, 2)
+_logTime("Noise generation done")
+smoothed = interpolateFrames(noise, 4)
+_logTime("Interpolation done")
+rawImages = frameToImage(smoothed)
+_logTime("Frame -> Image")
+scaledImages = scaleImage(rawImages, (1024, 1024))
+_logTime("Scaling done")
+images = filterImages(scaledImages, 4)
+_logTime("Filters done")
 images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
+_logTime("Result saved")
