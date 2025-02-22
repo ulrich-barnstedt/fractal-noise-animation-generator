@@ -3,4 +3,10 @@ name = "bg-topography"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "numpy>=2.2.3",
+    "perlin-numpy",
+]
+
+[tool.uv.sources]
+perlin-numpy = { git = "https://github.com/pvigier/perlin-numpy" }
