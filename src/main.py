@@ -7,10 +7,22 @@ from PIL import Image, ImageOps, ImageFilter
 def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     np.random.seed(math.floor(time.time()))
     noise = generate_fractal_noise_3d(
-        (frameCount, resolution, resolution), (1, generationResolution, generationResolution), octaves, tileable=(True, False, False)
+        (frameCount, resolution, resolution),
+        (1, generationResolution, generationResolution),
+        octaves,
+        tileable=(True, False, False)
     )
 
-    adjustedNoise = (noise + 2) * 127.5  # somewhat 0 - 255
+    # convert to range 0 - ...
+    minValue = np.min(noise)
+    zeroedNoise = noise + abs(minValue)
+
+    # convert to range 0 - 255
+    maxValue = np.max(zeroedNoise)
+    adjustedNoise = zeroedNoise * (255 / maxValue)
+
+    # TODO: fix why borders sometimes only appear
+    # print(np.min(adjustedNoise), np.max(adjustedNoise))
     return adjustedNoise
 
 def interpolateFrames(frames, steps):
@@ -36,25 +48,28 @@ def scaleImage(images, newSize):
 
 def filterImages(images, posterizeBits):
     posterizedImages = [ImageOps.posterize(i, posterizeBits) for i in images]
-    edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in posterizedImages]
-    coloredEdgeImage = [ImageOps.colorize(i, black="black", white="blue") for i in edgeImage]
+    return posterizedImages
+    # edgeImage = [i.filter(ImageFilter.FIND_EDGES) for i in posterizedImages]
+    # return edgeImage
+    # coloredEdgeImage = [ImageOps.colorize(i, black="black", white="blue") for i in edgeImage]
 
-    return coloredEdgeImage
+    # return coloredEdgeImage
 
 startTime = time.time()
 def _logTime(message):
     print(f"[{round(time.time() - startTime, 2)}s] {message}")
 
-_logTime("Start")
-noise = generateNoiseFrames(16, 1024, 8, 2)
+_logTime("Start noise generation")
+noise = generateNoiseFrames(16, 1024, 8, 5)
 _logTime("Noise generation done")
-smoothed = interpolateFrames(noise, 4)
+smoothed = interpolateFrames(noise, 8)
 _logTime("Interpolation done")
 rawImages = frameToImage(smoothed)
 _logTime("Frame -> Image")
 scaledImages = scaleImage(rawImages, (1024, 1024))
 _logTime("Scaling done")
-images = filterImages(scaledImages, 4)
+images = filterImages(scaledImages, 3)
 _logTime("Filters done")
+# images = scaledImages
 images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
 _logTime("Result saved")
