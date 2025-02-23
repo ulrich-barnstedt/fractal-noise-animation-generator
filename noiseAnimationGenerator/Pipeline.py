@@ -26,15 +26,15 @@ class Pipeline:
 
     def execute(self):
         logTime("Starting pipeline")
-        counter = 0
+        iterationCounter = 0
 
         for step in self.steps:
             step.initialize()
         logTime("Initialization complete")
 
         while self.dataSource.dataLeft():
-            counter += 1
-            logTime(f"Starting iteration {counter}")
+            iterationCounter += 1
+            logTime(f"Starting iteration {iterationCounter}")
             data = self.dataSource.next()
 
             for step in self.steps:
@@ -47,6 +47,8 @@ class Pipeline:
                         logSubTime("Break execution, no data")
 
                     break
+                if self.verbose:
+                    logSubTime(f"Iteration results: {len(data)}")
 
         logTime("All iterations complete, running cleanup")
         for step in self.steps:
