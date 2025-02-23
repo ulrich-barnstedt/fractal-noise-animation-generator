@@ -4,10 +4,10 @@ from . import DataStep
 
 
 class Colorize(DataStep):
-    blackTo: str
-    whiteTo: str
+    blackTo: Any
+    whiteTo: Any
 
-    def __init__(self, whiteTo: str, blackTo: str):
+    def __init__(self, whiteTo: Any, blackTo: Any):
         self.blackTo = blackTo
         self.whiteTo = whiteTo
 
