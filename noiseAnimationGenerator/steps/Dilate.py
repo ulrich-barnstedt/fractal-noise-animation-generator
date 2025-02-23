@@ -1,13 +1,16 @@
 from typing import Any
-from PIL import ImageFilter
+import cv2
+import numpy as np
 from noiseAnimationGenerator.steps import DataStep
 
 
 class Dilate(DataStep):
-    width: int
+    kernel: np.ndarray
+    iterations: int
 
-    def __init__(self, width: int):
-        self.width = width
+    def __init__(self, width: int, iterations: int):
+        self.kernel = np.ones((width, width), np.uint8)
+        self.iterations = iterations
 
     def execute(self, data: Any) -> Any:
-        return [i.filter(ImageFilter.MaxFilter(self.width)) for i in data]
+        return [cv2.dilate(i, self.kernel, iterations=self.iterations) for i in data]

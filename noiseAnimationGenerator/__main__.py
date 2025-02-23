@@ -13,15 +13,15 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
     ))
     .addSteps([
         NormalizeValues(),
-        Interpolate(12),
+        Interpolate(18),
         ToPIL(),
         Colorize("black", "blue"),
         Posterize(3),
         Brighten(2),
         FindEdges(),
         Brighten(4),
-        Dilate(5),
         ToCV2(),
+        Dilate(5, 1),
         CollectVideo("./out/output-pipeline.mp4")
     ])
     .execute()

@@ -12,11 +12,12 @@ class CollectVideo(DataStep):
         self.destination = destination
 
     def createWriter(self, image):
+        height, width = image.shape[:2]
         self.writer = cv2.VideoWriter(
             self.destination,
             cv2.VideoWriter_fourcc(*"mp4v"),
             60,
-            (image.size[0], image.size[1])  # has to be expanded to work
+            (width, height)
         )
 
     def cleanup(self):
