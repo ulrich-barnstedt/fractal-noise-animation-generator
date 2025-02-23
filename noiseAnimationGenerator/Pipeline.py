@@ -28,6 +28,10 @@ class Pipeline:
         logTime("Starting pipeline")
         counter = 0
 
+        for step in self.steps:
+            step.initialize()
+        logTime("Initialization complete")
+
         while self.dataSource.dataLeft():
             counter += 1
             logTime(f"Starting iteration {counter}")
@@ -38,5 +42,8 @@ class Pipeline:
                     logSubTime(f"Step {step.__class__.__name__}")
                 data = step.execute(data)
 
+        logTime("All iterations complete, running cleanup")
+        for step in self.steps:
+            step.cleanup()
         self.dataSource.reset()
-        logTime("All iterations complete")
+        logTime("Cleanup complete")
