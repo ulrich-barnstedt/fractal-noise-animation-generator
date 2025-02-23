@@ -28,6 +28,7 @@ class Pipeline:
         logTime("Starting pipeline")
         iterationCounter = 0
 
+        self.dataSource.initialize()
         for step in self.steps:
             step.initialize()
         logTime("Initialization complete")
@@ -47,11 +48,12 @@ class Pipeline:
                         logSubTime("Break execution, no data")
 
                     break
-                if self.verbose:
-                    logSubTime(f"Iteration results: {len(data)}")
+
+            if self.verbose and data is not None:
+                logSubTime(f"Iteration results: {len(data)}")
 
         logTime("All iterations complete, running cleanup")
         for step in self.steps:
             step.cleanup()
-        self.dataSource.reset()
+        self.dataSource.cleanup()
         logTime("Cleanup complete")

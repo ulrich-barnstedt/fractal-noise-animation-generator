@@ -1,10 +1,10 @@
 from .Pipeline import Pipeline
-from .sources import NoiseSource
+from .sources import NoiseSource, NoiseSource3D
 from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages, NormalizeValues, \
     DebugImage
 
 (Pipeline(verbose=True)
-    .source(NoiseSource(
+    .source(NoiseSource3D(
         12,
         (2560, 1392),
         (16, 8),

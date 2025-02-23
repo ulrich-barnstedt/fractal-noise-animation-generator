@@ -1,15 +1,9 @@
 import abc
-from abc import ABC
 from typing import Any
+from noiseAnimationGenerator.StatefulBase import StatefulBase
 
 
-class DataStep(ABC):
+class DataStep(StatefulBase):
     @abc.abstractmethod
     def execute(self, data: Any) -> Any:
-        pass
-
-    def initialize(self):
-        pass
-
-    def cleanup(self):
         pass

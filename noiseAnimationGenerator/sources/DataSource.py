@@ -1,14 +1,10 @@
 import abc
-from abc import ABC
+from noiseAnimationGenerator.StatefulBase import StatefulBase
 
 
-class DataSource(ABC):
+class DataSource(StatefulBase):
     @abc.abstractmethod
     def dataLeft(self) -> bool:
-        pass
-
-    @abc.abstractmethod
-    def reset(self):
         pass
 
     @abc.abstractmethod
