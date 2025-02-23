@@ -54,8 +54,13 @@ def filterImages(images, posterizeBits, deepfryFactor):
 
     return brighterEdgeImage
 
-def writeVideo(images):
-    videoWriter = cv2.VideoWriter("animation.mp4", cv2.VideoWriter_fourcc(*"mp4v"), 60, images[0].size, False)
+def writeVideo(images, path):
+    videoWriter = cv2.VideoWriter(
+        path,
+        cv2.VideoWriter_fourcc(*"mp4v"),
+        60,
+        (images[0].size[0], images[0].size[1])  # has to be expanded to work
+    )
 
     for image in images:
         videoWriter.write(cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR))
@@ -70,12 +75,12 @@ def _logTime(message):
 _logTime("Start noise generation")
 noise = generateNoiseFrames(12, (2560, 1392), (16, 8), 2)
 _logTime(f"Noise generation done ({len(noise)})")
-smoothed = interpolateFrames(noise, 12)
+smoothed = interpolateFrames(noise, 24)
 _logTime(f"Interpolation done ({len(smoothed)})")
 rawImages = frameToImage(smoothed)
 _logTime("Frame -> Image")
 images = filterImages(rawImages, 3, 2)
 _logTime("Filters done")
-writeVideo(images)
+writeVideo(images, "../out/noise.mp4")
 _logTime("Result saved")
 # images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
