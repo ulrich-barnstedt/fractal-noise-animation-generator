@@ -1,5 +1,5 @@
 from typing import Any
-from src.DataStep import DataStep
+from . import DataStep
 
 
 class Colorize(DataStep):

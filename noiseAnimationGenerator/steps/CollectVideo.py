@@ -1,5 +1,5 @@
 from typing import Any
-from src.DataStep import DataStep
+from . import DataStep
 
 
 class CollectVideo(DataStep):
@@ -9,4 +9,4 @@ class CollectVideo(DataStep):
         self.destination = destination
 
     def execute(self, data: Any) -> Any:
-        pass
+        print(data)

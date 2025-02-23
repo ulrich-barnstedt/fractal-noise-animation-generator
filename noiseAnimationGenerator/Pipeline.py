@@ -1,5 +1,5 @@
-from src.DataSource import DataSource
-from src.DataStep import DataStep
+from .sources import DataSource
+from .steps import DataStep
 
 
 class Pipeline:
@@ -29,14 +29,3 @@ class Pipeline:
                 data = step.execute(data)
 
         self.dataSource.reset()
-
-
-    # @staticmethod
-    # def fromNoise(frameCount: int, loop: bool):
-    #     def noiseSource():
-    #         # return true or false depending on if data is left
-    #         return True
-    #
-    #     newPipeline = Pipeline(noiseSource)
-    #     return newPipeline
-
