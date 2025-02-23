@@ -4,6 +4,6 @@ from PIL import Image
 from . import DataStep
 
 
-class ToImages(DataStep):
+class ToPIL(DataStep):
     def execute(self, data: Any) -> Any:
         return [Image.fromarray(np.uint8(x), "L") for x in data]

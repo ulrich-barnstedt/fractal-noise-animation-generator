@@ -3,8 +3,10 @@ from .Brighten import Brighten
 from .CollectVideo import CollectVideo
 from .Colorize import Colorize
 from .DebugImage import DebugImage
+from .Dilate import Dilate
 from .FindEdges import FindEdges
 from .Interpolate import Interpolate
 from .NormalizeValues import NormalizeValues
 from .Posterize import Posterize
-from .ToImages import ToImages
+from .ToPIL import ToPIL
+from .ToCV2 import ToCV2
