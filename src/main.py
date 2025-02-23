@@ -1,6 +1,7 @@
 import math
 import time
 import numpy as np
+import cv2
 from perlin_numpy import generate_fractal_noise_3d
 from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 
@@ -8,7 +9,7 @@ def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     np.random.seed(math.floor(time.time()))
     noise = generate_fractal_noise_3d(
         (frameCount, resolution[0], resolution[1]),
-        (1, generationResolution, generationResolution),
+        (1, generationResolution[0], generationResolution[1]),
         octaves,
         tileable=(True, False, False)
     )
@@ -21,8 +22,6 @@ def generateNoiseFrames(frameCount, resolution, generationResolution, octaves):
     maxValue = np.max(zeroedNoise)
     adjustedNoise = zeroedNoise * (255 / maxValue)
 
-    # TODO: fix why borders sometimes only appear
-    # print(np.min(adjustedNoise), np.max(adjustedNoise))
     return adjustedNoise
 
 def interpolateFrames(frames, steps):
@@ -55,12 +54,21 @@ def filterImages(images, posterizeBits, deepfryFactor):
 
     return brighterEdgeImage
 
+def writeVideo(images):
+    videoWriter = cv2.VideoWriter("animation.mp4", cv2.VideoWriter_fourcc(*"mp4v"), 60, images[0].size, False)
+
+    for image in images:
+        videoWriter.write(cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR))
+
+    videoWriter.release()
+
+
 startTime = time.time()
 def _logTime(message):
     print(f"[{round(time.time() - startTime, 2)}s] {message}")
 
 _logTime("Start noise generation")
-noise = generateNoiseFrames(12, (2576, 1392), 8, 2)
+noise = generateNoiseFrames(12, (2560, 1392), (16, 8), 2)
 _logTime(f"Noise generation done ({len(noise)})")
 smoothed = interpolateFrames(noise, 12)
 _logTime(f"Interpolation done ({len(smoothed)})")
@@ -68,5 +76,6 @@ rawImages = frameToImage(smoothed)
 _logTime("Frame -> Image")
 images = filterImages(rawImages, 3, 2)
 _logTime("Filters done")
-images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
+writeVideo(images)
 _logTime("Result saved")
+# images[0].save("gif.gif", format="GIF", append_images=images[1:], save_all=True, duration=50, loop=0)
