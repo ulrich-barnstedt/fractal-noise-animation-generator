@@ -10,14 +10,25 @@ class NoiseSource(DataSource):
     loop: bool
     frameCount: int
     size: tuple[int, int]
+    generationSize: tuple[int, int]
+    octaves: int
 
     counter: int
     initialFrame: Any
 
-    def __init__(self, frameCount: int, size: tuple[int, int], loop: bool):
+    def __init__(
+            self,
+            frameCount: int,
+            size: tuple[int, int],
+            generationSize: tuple[int, int],
+            loop: bool,
+            octaves: int
+    ):
         self.loop = loop
         self.frameCount = frameCount
         self.size = size
+        self.octaves = octaves
+        self.generationSize = generationSize
         self.counter = 0
 
     def dataLeft(self) -> bool:
@@ -32,11 +43,12 @@ class NoiseSource(DataSource):
             return self.initialFrame
 
         np.random.seed(math.floor(time.time()))
-        generatedNoise = generate_fractal_noise_2d(
-            (self.size[0], self.size[1]),
-            (8, 8),
-            2
+        noise = generate_fractal_noise_2d(
+            self.size,
+            self.generationSize,
+            self.octaves
         )
+        generatedNoise = np.array([noise])
 
         if self.counter == 1:
             self.initialFrame = generatedNoise

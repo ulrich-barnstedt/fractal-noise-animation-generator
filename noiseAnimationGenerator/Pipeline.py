@@ -40,7 +40,13 @@ class Pipeline:
             for step in self.steps:
                 if self.verbose:
                     logSubTime(f"Step {step.__class__.__name__}")
+
                 data = step.execute(data)
+                if data is None:
+                    if self.verbose:
+                        logSubTime("Break execution, no data")
+
+                    break
 
         logTime("All iterations complete, running cleanup")
         for step in self.steps:

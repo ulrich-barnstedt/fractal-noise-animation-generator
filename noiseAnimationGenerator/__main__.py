@@ -3,7 +3,13 @@ from .sources import NoiseSource
 from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages, NormalizeValues
 
 (Pipeline(verbose=True)
-    .source(NoiseSource(12, (2560, 1392), True))
+    .source(NoiseSource(
+        12,
+        (2560, 1392),
+        (16, 8),
+        True,
+        2
+    ))
     .addSteps([
         NormalizeValues(),
         Interpolate(12),
