@@ -10,20 +10,21 @@ modular system for creating these specific types of animations.
 
 ### Usage
 
-This project is managed using [uv](https://docs.astral.sh/uv/), consider using it to install dependencies.
+This project is managed using [uv](https://docs.astral.sh/uv/), consider using it to install the 
+project's dependencies.
 
 Run the main module:
 ```shell
 python3 -m noiseAnimationGenerator
 ```
 
-The pipeline can be configured by editing the `__main__.py` located in `noiseAnimationGenerator/`.
+The pipeline can be configured by editing `__main__.py` located in `noiseAnimationGenerator/`.
 
 ### Notes
 
-The 3D fractal noise generator itself isn't particularly memory efficient, and generating amounts of frames will
-result in _very high_ memory consumption.
-Using the 2D generator (`NoiseSource` instead of `NoiseSource3D` in code) mostly eliminates this problem.
+The 3D fractal noise generator itself isn't particularly memory efficient, 
+and generating large amounts of frames will result in _very high_ memory consumption.
+Using the 2D generator (`NoiseSource` instead of `NoiseSource3D`) mostly eliminates this problem.
 
 It is recommended to post-process videos you plan on using afterward, as per default a border is emitted
 around each frame, as well as a very high bitrate (resulting in sometimes undesirably large files). 
@@ -38,9 +39,9 @@ ffmpeg -i output-pipeline.mp4 -vcodec libx264 -vf "crop=1080:2400:10:10" output_
 
 ### Examples
 
-An existing example already exists in `__main__.py`.
+See `__main__.py` for an example detailing the most common use-cases.
 
-The following code was used to generate the `GIF` displayed at the top of this ReadMe:
+The following code was used to generate the `GIF` displayed at the top of this readme:
 
 ```python
 (Pipeline(verbose=True)
