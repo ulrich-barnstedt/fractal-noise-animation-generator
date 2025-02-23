@@ -1,11 +1,11 @@
 from .Pipeline import Pipeline
 from .sources import NoiseSource, NoiseSource3D
 from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToPIL, NormalizeValues, \
-    DebugImage, Dilate, ToCV2
+    DebugImage, Dilate, ToCV2, Quantize
 
 (Pipeline(verbose=True)
     .source(NoiseSource3D(
-        4,
+        16,
         (2560, 1392),
         (16, 8),
         True,
@@ -25,5 +25,4 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
         CollectVideo("./out/output-pipeline.mp4")
     ])
     .execute()
- )
-
+)
