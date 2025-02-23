@@ -5,7 +5,7 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
 
 (Pipeline(verbose=True)
     .source(NoiseSource(
-        12,
+        1,
         (2560, 1392),
         (16, 8),
         True,
@@ -20,6 +20,7 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
         Brighten(2),
         FindEdges(),
         Brighten(3),
+        DebugImage(),
         CollectVideo("../out/output.mp4")
     ])
     .execute()

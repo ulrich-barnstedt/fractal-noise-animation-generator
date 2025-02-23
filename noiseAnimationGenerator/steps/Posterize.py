@@ -1,4 +1,5 @@
 from typing import Any
+from PIL import ImageOps
 from . import DataStep
 
 
@@ -9,4 +10,4 @@ class Posterize(DataStep):
         self.bits = bits
 
     def execute(self, data: Any) -> Any:
-        pass
+        return [ImageOps.posterize(i, self.bits) for i in data]
