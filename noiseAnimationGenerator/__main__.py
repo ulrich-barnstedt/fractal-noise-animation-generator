@@ -1,12 +1,11 @@
 from .Pipeline import Pipeline
 from .sources import NoiseSource
-from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages
+from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages, NormalizeValues
 
-print("running main")
-
-(Pipeline()
-    .source(NoiseSource(12, True))
+(Pipeline(verbose=True)
+    .source(NoiseSource(12, (2560, 1392), True))
     .addSteps([
+        NormalizeValues(),
         Interpolate(12),
         ToImages(),
         Colorize(),

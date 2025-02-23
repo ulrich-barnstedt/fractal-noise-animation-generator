@@ -1,50 +1,64 @@
+import math
+import time
+import numpy as np
+from typing import Any
+from perlin_noise import PerlinNoise
+from perlin_numpy import generate_fractal_noise_2d
 from . import DataSource
 
-# import math
-# import time
-# import matplotlib.pyplot as plt
-# import numpy as np
-# from perlin_noise import PerlinNoise
-
-# noise1 = PerlinNoise(octaves=3)
-# noise2 = PerlinNoise(octaves=6)
-# noise3 = PerlinNoise(octaves=12)
-# noise4 = PerlinNoise(octaves=24)
-#
-# xpix, ypix = 200, 200
-# pic = []
-# for i in range(xpix):
-#     row = []
-#     for j in range(ypix):
-#         noise_val = noise1([i/xpix, j/ypix])
-#         noise_val += 0.5 * noise2([i/xpix, j/ypix])
-#         noise_val += 0.25 * noise3([i/xpix, j/ypix])
-#         noise_val += 0.125 * noise4([i/xpix, j/ypix])
-#
-#         row.append(noise_val)
-#     pic.append(row)
-#
-# plt.imshow(pic, cmap='gray')
-# plt.show()
 
 class NoiseSource(DataSource):
     loop: bool
     frameCount: int
+    size: tuple[int, int]
 
     counter: int
+    initialFrame: Any
 
-    def __init__(self, frameCount: int, loop: bool):
+    def __init__(self, frameCount: int, size: tuple[int, int], loop: bool):
         self.loop = loop
         self.frameCount = frameCount
+        self.size = size
         self.counter = 0
 
     def dataLeft(self) -> bool:
-        return self.counter >= self.frameCount
+        return self.counter < self.frameCount + (1 if self.loop else 0)
 
     def reset(self):
         self.counter = 0
 
     def next(self):
         self.counter += 1
+        if self.counter > self.frameCount:
+            return self.initialFrame
 
-        return [self.frameCount, 1, 2, 3]
+        # noise1 = PerlinNoise(octaves=3)
+        # noise2 = PerlinNoise(octaves=6)
+        # noise3 = PerlinNoise(octaves=12)
+        # noise4 = PerlinNoise(octaves=24)
+        #
+        # xSize, ySize = self.size
+        # generatedNoise = []
+        # for i in range(xSize):
+        #     row = []
+        #     for j in range(ySize):
+        #         noise_val = noise1((i / xSize, j / ySize))
+        #         noise_val += 0.5 * noise2((i / xSize, j / ySize))
+        #         noise_val += 0.25 * noise3((i / xSize, j / ySize))
+        #         noise_val += 0.125 * noise4((i / xSize, j / ySize))
+        #
+        #         row.append(noise_val)
+        #     generatedNoise.append(row)
+
+
+        np.random.seed(math.floor(time.time()))
+        generatedNoise = generate_fractal_noise_2d(
+            (self.size[0], self.size[1]),
+            (8, 8),
+            2
+        )
+
+        if self.counter == 1:
+            self.initialFrame = generatedNoise
+
+        return generatedNoise

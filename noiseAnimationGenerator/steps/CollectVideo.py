@@ -9,4 +9,5 @@ class CollectVideo(DataStep):
         self.destination = destination
 
     def execute(self, data: Any) -> Any:
-        print(data)
+        pass
+
