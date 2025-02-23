@@ -2,6 +2,7 @@ from .DataStep import DataStep
 from .Brighten import Brighten
 from .CollectVideo import CollectVideo
 from .Colorize import Colorize
+from .DebugImage import DebugImage
 from .FindEdges import FindEdges
 from .Interpolate import Interpolate
 from .NormalizeValues import NormalizeValues

@@ -1,6 +1,7 @@
 from .Pipeline import Pipeline
 from .sources import NoiseSource
-from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages, NormalizeValues
+from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Posterize, ToImages, NormalizeValues, \
+    DebugImage
 
 (Pipeline(verbose=True)
     .source(NoiseSource(
