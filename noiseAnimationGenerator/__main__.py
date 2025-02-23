@@ -5,7 +5,7 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
 
 (Pipeline(verbose=True)
     .source(NoiseSource3D(
-        12,
+        16,
         (2560, 1392),
         (16, 8),
         True,
@@ -13,7 +13,7 @@ from .steps import Brighten, CollectVideo, Colorize, FindEdges, Interpolate, Pos
     ))
     .addSteps([
         NormalizeValues(),
-        Interpolate(18),
+        Interpolate(40),
         ToPIL(),
         Colorize("black", "blue"),
         Posterize(3),
