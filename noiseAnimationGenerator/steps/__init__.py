@@ -8,5 +8,6 @@ from .FindEdges import FindEdges
 from .Interpolate import Interpolate
 from .NormalizeValues import NormalizeValues
 from .Posterize import Posterize
+from .Quantize import Quantize
 from .ToPIL import ToPIL
 from .ToCV2 import ToCV2

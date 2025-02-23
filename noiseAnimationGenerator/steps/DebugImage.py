@@ -1,13 +1,16 @@
-from typing import Any
 import numpy as np
+from typing import Any
+from PIL import Image
 from . import DataStep
 
 
 class DebugImage(DataStep):
     def execute(self, data: Any) -> Any:
-        if isinstance(data, list) or isinstance(data, np.ndarray):
-            data[0].show()
+        image = data[0]
+
+        if isinstance(image, Image.Image):
+            image.show()
         else:
-            data.show()
+            Image.fromarray(np.uint8(image)).show()
 
         return data
